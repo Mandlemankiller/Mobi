@@ -9,7 +9,7 @@ import cz.jeme.programu.mobi.interfaces.Burnable;
 
 public class Skeleton extends Morph implements Burnable {
 	public Skeleton() {
-		super(20);
+		setMaxHealth(20);
 	}
 	public void shoot(EntityShootBowEvent event) {
 		Player player = (Player) event.getEntity();

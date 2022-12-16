@@ -9,7 +9,7 @@ import cz.jeme.programu.mobi.interfaces.Burnable;
 
 public class Zombie extends Morph implements Attackable, Burnable {
 	public Zombie() {
-		super(20);
+		setMaxHealth(20);
 	}
 	@Override
 	public void attack(EntityDamageByEntityEvent event) {

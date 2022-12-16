@@ -14,7 +14,7 @@ import cz.jeme.programu.mobi.interfaces.Flyable;
 public class Ghast extends Morph implements Interactable, Flyable {
 
 	public Ghast() {
-		super(10);
+		setMaxHealth(10);
 	}
 
 	@Override

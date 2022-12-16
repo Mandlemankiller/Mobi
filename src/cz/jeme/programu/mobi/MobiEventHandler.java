@@ -42,7 +42,7 @@ public class MobiEventHandler implements Listener {
 
 	public void playerMorphed(Player player) {
 		Object morphObject = getMorphObject(player);
-		((Morph) morphObject).setHealth(player);
+		((Morph) morphObject).setPlayerHealth(player);
 		checkAllowFlight(player);
 	}
 	
