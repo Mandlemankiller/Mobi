@@ -1,0 +1,15 @@
+main: cz.jeme.programu.mobi.Mobi
+name: Mobi
+version: 1.0
+api-version: 1.19
+author: XD_CZ
+description: Adds many transformations into entities
+website: programu.jeme.cz
+prefix: Mobi
+commands:
+    mobi:
+      description: Main command for operating with Mobi plugin
+      usage: "Usage: TODO"
+      permission: mobi.mobi
+      permission-message: "No permission! Ask the admin to grant it."
+      aliases: [mobi]
