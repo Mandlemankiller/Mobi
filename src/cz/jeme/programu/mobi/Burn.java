@@ -1,17 +1,25 @@
 package cz.jeme.programu.mobi;
 
+import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import cz.jeme.programu.mobi.interfaces.Burnable;
 
 public class Burn extends BukkitRunnable {
 	private Config config;
+	private Random random = new Random();
 
 	public Burn(Config config) {
 		this.config = config;
@@ -31,18 +39,46 @@ public class Burn extends BukkitRunnable {
 
 			String morph = config.players.get(player.getUniqueId());
 			boolean isBurningMob = Mobi.MORPHS.get(morph) instanceof Burnable;
-			
+
 			GameMode gameMode = player.getGameMode();
 			boolean isSurival = gameMode == GameMode.SURVIVAL;
 
-			if (isOverworld && isDaytime && isBurningMob && isSurival) {
+			if (isOverworld && isDaytime && isBurningMob && isSurival && world.isClearWeather()) {
+
 				int topBlockY = world.getHighestBlockYAt(location);
+				Location topBlockLocation = new Location(world, location.getX(), topBlockY, location.getZ());
+				while (!world.getBlockAt(topBlockLocation).getType().isOccluding()) {
+					topBlockLocation.setY(topBlockLocation.getY() - 1);
+				}
+				topBlockY = topBlockLocation.getBlockY();
+
 				if (location.getBlockY() > topBlockY) {
-					player.setFireTicks(160);
+					ItemStack item = player.getInventory().getHelmet();
+					if (item != null) {
+						Damageable meta = (Damageable) item.getItemMeta();
+						int itemDamage = meta.getDamage();
+						int unbreakingLevel = meta.getEnchantLevel(Enchantment.DURABILITY);
+
+						float damageProbability = 100 / (unbreakingLevel + 1F);
+
+						int randInt = random.nextInt(100) + 1;
+						if (randInt <= damageProbability) {
+							if (random.nextInt(100) + 1 <= 20) {
+								meta.setDamage(itemDamage + 1);
+							}
+						}
+						if (meta.getDamage() == item.getType().getMaxDurability()) {
+							player.getInventory().setHelmet(new ItemStack(Material.AIR));
+							player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1F, 1F);
+						} else {
+							item.setItemMeta(meta);
+						}
+					} else {
+						player.setFireTicks(160);
+					}
 				}
 			}
-
 		}
-	}
 
+	}
 }
