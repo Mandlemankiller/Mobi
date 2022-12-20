@@ -4,9 +4,14 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 
+import cz.jeme.programu.mobi.CooldownManager;
+
 public abstract class Morph {
 	
 	private double maxHealth = Integer.MIN_VALUE;
+	
+	protected CooldownManager cooldownManager = new CooldownManager();
+	
 	
 	public void setPlayerHealth(Player player) {
 		assert maxHealth != Integer.MIN_VALUE : "maxHealth was not assigned! (" + getClass().getName() + ")";

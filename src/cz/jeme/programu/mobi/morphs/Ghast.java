@@ -6,22 +6,19 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import cz.jeme.programu.mobi.CooldownManager;
 import cz.jeme.programu.mobi.interfaces.Flyable;
 import cz.jeme.programu.mobi.interfaces.Interactable;
 import net.md_5.bungee.api.ChatColor;
 
 public class Ghast extends Morph implements Interactable, Flyable {
 
-	private CooldownManager cooldownManager;
-
 	public Ghast() {
 		setMaxHealth(10);
-		this.cooldownManager = new CooldownManager();
 	}
 
 	@Override
 	public void interact(PlayerInteractEvent event) {
+		
 		if (event.getItem() == null) {
 			return;
 		}
@@ -39,7 +36,7 @@ public class Ghast extends Morph implements Interactable, Flyable {
 					cooldownManager.setTimeStamp(player.getUniqueId(), item);
 				} else {
 					long timeStampDifference = cooldownManager.getTimeStampDifference(player.getUniqueId(), item);
-					double remaining = (cooldownTime - timeStampDifference)/1000d;
+					double remaining = (cooldownTime - timeStampDifference)/1000D;
 					player.sendMessage(ChatColor.RED + "Your ability will be availible again in " + String.format("%.2f", remaining) + " seconds.");
 				}
 				break;
