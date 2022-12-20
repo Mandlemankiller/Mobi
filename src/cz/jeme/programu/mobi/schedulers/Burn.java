@@ -43,9 +43,9 @@ public class Burn extends BukkitRunnable {
 			boolean isBurningMob = Mobi.MORPHS.get(morph) instanceof Burnable;
 
 			GameMode gameMode = player.getGameMode();
-			boolean isSurival = gameMode == GameMode.SURVIVAL;
+			boolean isCorrectGamemode = gameMode == GameMode.SURVIVAL || gameMode == GameMode.ADVENTURE;
 
-			if (isOverworld && isDaytime && isBurningMob && isSurival && world.isClearWeather()) {
+			if (isOverworld && isDaytime && isBurningMob && isCorrectGamemode && world.isClearWeather()) {
 
 				int topBlockY = world.getHighestBlockYAt(location);
 				Location topBlockLocation = new Location(world, location.getX(), topBlockY, location.getZ());
