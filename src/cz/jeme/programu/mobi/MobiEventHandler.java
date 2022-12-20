@@ -1,5 +1,6 @@
 package cz.jeme.programu.mobi;
 
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,7 +36,8 @@ public class MobiEventHandler implements Listener {
 		if (morphObject instanceof Flyable) {
 			player.setAllowFlight(true);
 			player.setFlySpeed((float) 0.05);
-		} else {
+		} else if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+			player.sendMessage("hov");
 			player.setAllowFlight(false);
 		}
 	}
