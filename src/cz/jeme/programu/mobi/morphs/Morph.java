@@ -17,8 +17,8 @@ public abstract class Morph {
 		
 		double currentMaxHealth = playerMaxHealthAttribute.getBaseValue();
 		double currentHealth = player.getHealth();
-		double currentHealthPercentage = currentHealth / (currentMaxHealth / 100);
-		double newHealth = (newMaxHealth / 100) * currentHealthPercentage;
+		double currentHealthPercentage = currentHealth / (currentMaxHealth / 100F);
+		double newHealth = (newMaxHealth / 100F) * currentHealthPercentage;
 		
 		playerMaxHealthAttribute.setBaseValue(newMaxHealth);
 		player.setHealth(newHealth);
@@ -26,5 +26,5 @@ public abstract class Morph {
 	
 	protected void setMaxHealth(double maxHealth) {
 		this.maxHealth = maxHealth;
-	}
+	}	
 }
