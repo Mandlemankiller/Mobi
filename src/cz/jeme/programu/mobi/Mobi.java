@@ -14,6 +14,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import cz.jeme.programu.mobi.schedulers.Burn;
+import cz.jeme.programu.mobi.schedulers.Effect;
 import net.md_5.bungee.api.ChatColor;
 
 public class Mobi extends JavaPlugin {
@@ -56,7 +57,9 @@ public class Mobi extends JavaPlugin {
 		pm.registerEvents(eventHandler, this);
 
 		new Burn(config).runTaskTimer(this, 0L, 20L);
-
+		new Effect(config).runTaskTimer(this, 0L, 20L);
+		
+		
 		serverLog(Level.INFO, "Started morphs reflection");
 		for (String morph : MORPHS.keySet()) {
 			try {
