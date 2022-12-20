@@ -1,4 +1,4 @@
-package cz.jeme.programu.mobi;
+package cz.jeme.programu.mobi.schedulers;
 
 import java.util.Random;
 
@@ -15,6 +15,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import cz.jeme.programu.mobi.Config;
+import cz.jeme.programu.mobi.Mobi;
 import cz.jeme.programu.mobi.interfaces.Burnable;
 
 public class Burn extends BukkitRunnable {

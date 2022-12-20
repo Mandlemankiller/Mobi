@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import cz.jeme.programu.mobi.schedulers.Burn;
 import net.md_5.bungee.api.ChatColor;
 
 public class Mobi extends JavaPlugin {
