@@ -24,7 +24,7 @@ public class Zombie extends Morph implements Attackable, Burnable, Effectable {
 	}
 	@Override
 	public PotionEffect[] getEffects() {
-		PotionEffect[] effects = {new PotionEffect(PotionEffectType.NIGHT_VISION, 240, 255, true, false, false)};
+		PotionEffect[] effects = {new PotionEffect(PotionEffectType.NIGHT_VISION, 12030, 255, true, false, false)};
 		return effects;
 	}
 }

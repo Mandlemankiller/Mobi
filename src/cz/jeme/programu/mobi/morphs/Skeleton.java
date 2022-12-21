@@ -4,10 +4,13 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import cz.jeme.programu.mobi.interfaces.Burnable;
+import cz.jeme.programu.mobi.interfaces.Effectable;
 
-public class Skeleton extends Morph implements Burnable {
+public class Skeleton extends Morph implements Burnable, Effectable {
 	public Skeleton() {
 		setMaxHealth(20);
 	}
@@ -20,5 +23,10 @@ public class Skeleton extends Morph implements Burnable {
 		if (event.getItem().getType() == Material.BOW) {
 			event.setCancelled(true);
 		}
+	}
+	@Override
+	public PotionEffect[] getEffects() {
+		PotionEffect[] effects = {new PotionEffect(PotionEffectType.NIGHT_VISION, 12030, 255, true, false, false)};
+		return effects;
 	}
 }
