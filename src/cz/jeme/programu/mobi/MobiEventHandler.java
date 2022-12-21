@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import cz.jeme.programu.mobi.interfaces.Attackable;
+import cz.jeme.programu.mobi.interfaces.Damageable;
 import cz.jeme.programu.mobi.interfaces.Flyable;
 import cz.jeme.programu.mobi.interfaces.Interactable;
 import cz.jeme.programu.mobi.morphs.Morph;
@@ -19,14 +20,14 @@ import cz.jeme.programu.mobi.morphs.Skeleton;
 
 public class MobiEventHandler implements Listener {
 
-	private Config config;
+	private MobiData mobiData;
 
-	public MobiEventHandler(Config config) {
-		this.config = config;
+	public MobiEventHandler(MobiData config) {
+		this.mobiData = config;
 	}
 
 	private Object getMorphObject(Player player) {
-		String morph = config.players.get(player.getUniqueId());
+		String morph = mobiData.players.get(player.getUniqueId());
 		return Mobi.MORPHS.get(morph);
 	}
 	
@@ -37,7 +38,6 @@ public class MobiEventHandler implements Listener {
 			player.setAllowFlight(true);
 			player.setFlySpeed((float) 0.05);
 		} else if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-			player.sendMessage("hov");
 			player.setAllowFlight(false);
 		}
 	}
@@ -51,8 +51,8 @@ public class MobiEventHandler implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		if (!config.playerInSection(player)) {
-			config.updatePlayer(player, "human");
+		if (!mobiData.playerInSection(player)) {
+			mobiData.updatePlayer(player, "human");
 			playerMorphed(player);
 		}
 		checkAllowFlight(player);
@@ -66,12 +66,20 @@ public class MobiEventHandler implements Listener {
 				((Attackable) morphObject).attack(event);
 			}
 		}
+		if (event.getEntity() instanceof Player) {
+			Player player = (Player) event.getEntity();
+			Object morphObject = getMorphObject(player);
+			if (morphObject instanceof Damageable) {
+				((Damageable) morphObject).damaged(event);
+			}
+		}
+		
 	}
 	@EventHandler
 	public void onEntityShootBow(EntityShootBowEvent event) {
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
-			if (config.players.get(player.getUniqueId()).equals("skeleton")) {
+			if (mobiData.players.get(player.getUniqueId()).equals("skeleton")) {
 				Object morphObject = getMorphObject(player);
 				((Skeleton) morphObject).shoot(event);
 			}
@@ -80,7 +88,7 @@ public class MobiEventHandler implements Listener {
 	@EventHandler
 	public void onPlayerItemDamage(PlayerItemDamageEvent event) {
 		Player player = event.getPlayer();
-		if (config.players.get(player.getUniqueId()).equals("skeleton")) {
+		if (mobiData.players.get(player.getUniqueId()).equals("skeleton")) {
 			Object morphObject = getMorphObject(player);
 			((Skeleton) morphObject).itemUsed(event);
 		}
