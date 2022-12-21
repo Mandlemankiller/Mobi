@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import cz.jeme.programu.mobi.morphs.Morph;
 import cz.jeme.programu.mobi.schedulers.BurnManager;
 import cz.jeme.programu.mobi.schedulers.EffectManager;
 import net.md_5.bungee.api.ChatColor;
@@ -23,7 +24,7 @@ public class Mobi extends JavaPlugin {
 	public static final Map<String, String> CORRECT_ARGS = new HashMap<String, String>();
 
 	// Set of all valid morphs
-	public static final Map<String, Object> MORPHS = new HashMap<String, Object>();
+	public static final Map<String, Morph> MORPHS = new HashMap<String, Morph>();
 
 	// Preifx
 	public static final String PREFIX = ChatColor.DARK_GRAY.toString() + "[" + ChatColor.GOLD.toString()
@@ -122,7 +123,7 @@ public class Mobi extends JavaPlugin {
 						return true;
 					}
 				} else if (args[0].equals(CORRECT_ARGS.get("reload"))) {
-					mobiData.reloadConfig();
+					mobiData.reloadData();
 					sender.sendMessage(PREFIX + ChatColor.GREEN.toString() + "MobiData reloaded!");
 					return true;
 				} else if (args[0].equals(CORRECT_ARGS.get("help"))) {
@@ -154,14 +155,16 @@ public class Mobi extends JavaPlugin {
 		Bukkit.getServer().getLogger().log(lvl, msg);
 	}
 
-	private Object reflection(String morph)
+	private Morph reflection(String morphName)
 			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
 			NoSuchMethodException, SecurityException, ClassNotFoundException {
-		String className = morph.substring(0, 1).toUpperCase() + morph.substring(1);
+		String className = morphName.substring(0, 1).toUpperCase() + morphName.substring(1);
 		Class<?> morphClass = Class.forName(this.getClass().getPackageName() + ".morphs." + className);
 		Object morphObject = morphClass.getDeclaredConstructor().newInstance();
 //			Method method = morphClass.getMethod("attack", EntityDamageByEntityEvent.class);
 //			method.invoke(morphObject, event);
-		return morphObject;
+		Morph morph = (Morph) morphObject;
+		morph.setMobiData(mobiData);
+		return morph;
 	}
 }
