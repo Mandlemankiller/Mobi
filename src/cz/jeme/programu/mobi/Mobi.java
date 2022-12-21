@@ -13,8 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import cz.jeme.programu.mobi.schedulers.Burn;
-import cz.jeme.programu.mobi.schedulers.Effect;
+import cz.jeme.programu.mobi.schedulers.BurnManager;
+import cz.jeme.programu.mobi.schedulers.EffectManager;
 import net.md_5.bungee.api.ChatColor;
 
 public class Mobi extends JavaPlugin {
@@ -31,7 +31,7 @@ public class Mobi extends JavaPlugin {
 
 	// Objects
 	private MobiEventHandler eventHandler = null;
-	private Config config = null;
+	private MobiData mobiData = null;
 
 	// Fill the maps
 	{
@@ -44,20 +44,21 @@ public class Mobi extends JavaPlugin {
 		MORPHS.put("human", null);
 		MORPHS.put("skeleton", null);
 		MORPHS.put("ghast", null);
+		MORPHS.put("bat", null);
 	}
 
 	@Override
 	public void onEnable() {
 		getCommand("mobi").setTabCompleter(new CommandTabCompleter());
 
-		config = new Config(getDataFolder());
-		eventHandler = new MobiEventHandler(config);
+		mobiData = new MobiData(getDataFolder());
+		eventHandler = new MobiEventHandler(mobiData);
 		
 		PluginManager pm = Bukkit.getServer().getPluginManager();
 		pm.registerEvents(eventHandler, this);
 
-		new Burn(config).runTaskTimer(this, 0L, 20L);
-		new Effect(config).runTaskTimer(this, 0L, 20L);
+		new BurnManager(mobiData).runTaskTimer(this, 0L, 20L);
+		new EffectManager(mobiData).runTaskTimer(this, 0L, 20L);
 		
 		
 		serverLog(Level.INFO, "Started morphs reflection");
@@ -121,8 +122,8 @@ public class Mobi extends JavaPlugin {
 						return true;
 					}
 				} else if (args[0].equals(CORRECT_ARGS.get("reload"))) {
-					config.reloadConfig();
-					sender.sendMessage(PREFIX + ChatColor.GREEN.toString() + "Config reloaded!");
+					mobiData.reloadConfig();
+					sender.sendMessage(PREFIX + ChatColor.GREEN.toString() + "MobiData reloaded!");
 					return true;
 				} else if (args[0].equals(CORRECT_ARGS.get("help"))) {
 					return false;
@@ -136,14 +137,14 @@ public class Mobi extends JavaPlugin {
 
 	private void set(String playerName, String key) {
 		Player player = Bukkit.getPlayer(playerName);
-		config.updatePlayer(player, key);
+		mobiData.updatePlayer(player, key);
 		eventHandler.playerMorphed(player);
 	}
 	
 
 	private String get(String playerName) {
 		UUID uuid = Bukkit.getPlayer(playerName).getUniqueId();
-		return config.players.get(uuid);
+		return mobiData.players.get(uuid);
 	}
 
 	public static void serverLog(Level lvl, String msg) {
