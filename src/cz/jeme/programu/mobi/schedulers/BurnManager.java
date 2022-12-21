@@ -15,16 +15,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import cz.jeme.programu.mobi.Config;
+import cz.jeme.programu.mobi.MobiData;
 import cz.jeme.programu.mobi.Mobi;
 import cz.jeme.programu.mobi.interfaces.Burnable;
 
-public class Burn extends BukkitRunnable {
-	private Config config;
+public class BurnManager extends BukkitRunnable {
+	private MobiData mobiData;
 	private Random random = new Random();
 
-	public Burn(Config config) {
-		this.config = config;
+	public BurnManager(MobiData config) {
+		this.mobiData = config;
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class Burn extends BukkitRunnable {
 			long time = world.getTime();
 			boolean isDaytime = time >= 0 && time <= 12000;
 
-			String morph = config.players.get(player.getUniqueId());
+			String morph = mobiData.players.get(player.getUniqueId());
 			boolean isBurningMob = Mobi.MORPHS.get(morph) instanceof Burnable;
 
 			GameMode gameMode = player.getGameMode();
