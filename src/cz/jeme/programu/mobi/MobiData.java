@@ -9,27 +9,40 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import javax.xml.stream.events.Namespace;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-public class Config {
+import cz.jeme.programu.mobi.schedulers.EffectManager;
+
+public class MobiData {
 
 	// Yaml configuration variables
-	private static final String CONFIG_FILE_NAME = "players.yml";
-	private static final String SECTION_NAME = "Players";
+	private final Map<String, String> NAMES = new HashMap<String, String>();
+	private final Map<String, ConfigurationSection> SECTIONS = new HashMap<String, ConfigurationSection>();
+	
+	private static final String CONFIG_FILE_NAME = "data.yml";
+	
 	public File configFile = null;
 	public FileConfiguration configFileYaml = null;
-	public ConfigurationSection configFileYamlSection = null;
 
 	// Player maps
 	public Map<UUID, String> players = new HashMap<UUID, String>();
 	public Map<String, Set<UUID>> morphs = new HashMap<String, Set<UUID>>();
 	
 	private File dataDir;
+	
+	{
+		NAMES.put("MORPHS", "Morphs");
+		NAMES.put("DATA", "Data");
+		NAMES.put("SLIMES", "Data.Slimes");
+	}
+	
 
-	public Config(File dataDir) {
+	public MobiData(File dataDir) {
 		this.dataDir = dataDir;
 
 		if (!dataDir.exists()) {
@@ -52,10 +65,13 @@ public class Config {
 				Mobi.serverLog(Level.SEVERE, e.toString());
 			}
 		}
-
-		if (configFileYamlSection == null) {
-			configFileYamlSection = configFileYaml.createSection(SECTION_NAME);
+		
+		if (SECTIONS.size() == 0) {
+			for (String key : NAMES.keySet()) {
+				SECTIONS.put(NAMES.get(key), configFileYaml.createSection(NAMES.get(key)));
+			}
 		}
+		
 		saveConfigFile();
 
 	}
@@ -73,11 +89,15 @@ public class Config {
 	private void refreshConfigVars() {
 		configFile = new File(dataDir, CONFIG_FILE_NAME);
 		configFileYaml = YamlConfiguration.loadConfiguration(configFile);
-		configFileYamlSection = configFileYaml.getConfigurationSection(SECTION_NAME);
+		SECTIONS.clear();
+		for (String key : NAMES.keySet()) {
+			SECTIONS.put(key, configFileYaml.getConfigurationSection(NAMES.get(key)));
+		}
 	}
 	
 	public void updatePlayer(Player player, String value) {
-		configFileYamlSection.set(player.getUniqueId().toString(), value);
+		new EffectManager(this).clearPreviousEffects(player);
+		SECTIONS.get(NAMES.get("MORPHS")).set(player.getUniqueId().toString(), value);
 		players.put(player.getUniqueId(), value);
 		if (!morphs.containsKey(value)) {
 			morphs.put(value, new HashSet<UUID>());
@@ -87,8 +107,9 @@ public class Config {
 	}
 	
 	private void loadPlayers() {
-		for (String key : configFileYamlSection.getKeys(false)) {
-			String value = configFileYamlSection.getString(key);
+		ConfigurationSection section = SECTIONS.get(NAMES.get("MORPHS"));
+		for (String key : section.getKeys(false)) {
+			String value = section.getString(key);
 			players.put(UUID.fromString(key), value);
 			if (!morphs.containsKey(key)) {
 				morphs.put(value, new HashSet<UUID>());
@@ -98,7 +119,18 @@ public class Config {
 	}
 	
 	public boolean playerInSection(Player player) {
-		return configFileYamlSection.getKeys(false).contains(player.getUniqueId().toString());
+		return SECTIONS.get("MORPHS").getKeys(false).contains(player.getUniqueId().toString());
 	}
+	
+	public void updateData(Player player, String dataSection, String key, String value) {
+		ConfigurationSection section = SECTIONS.get(NAMES.get("DATA") + "." + dataSection + "." + player.getUniqueId().toString());
+		section.set(key, value);
+	}
+	
+	public String getData(Player player, String dataSection, String key, String value) {
+		ConfigurationSection section = SECTIONS.get(NAMES.get("DATA") + "." + dataSection + "." + player.getUniqueId().toString());
+		return section.getString(key);
+	}
+	
 
 }
