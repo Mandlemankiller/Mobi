@@ -16,6 +16,7 @@ import cz.jeme.programu.mobi.interfaces.Attackable;
 import cz.jeme.programu.mobi.interfaces.Damageable;
 import cz.jeme.programu.mobi.interfaces.Flyable;
 import cz.jeme.programu.mobi.interfaces.Interactable;
+import cz.jeme.programu.mobi.interfaces.Morphable;
 import cz.jeme.programu.mobi.morphs.Morph;
 import cz.jeme.programu.mobi.morphs.Skeleton;
 
@@ -27,14 +28,14 @@ public class MobiEventHandler implements Listener {
 		this.mobiData = config;
 	}
 
-	private Object getMorphObject(Player player) {
+	private Morph getMorphObject(Player player) {
 		String morph = mobiData.players.get(player.getUniqueId());
 		return Mobi.MORPHS.get(morph);
 	}
 	
 	
 	private void checkAllowFlight(Player player) {
-		Object morphObject = getMorphObject(player);
+		Morph morphObject = getMorphObject(player);
 		if (morphObject instanceof Flyable) {
 			player.setAllowFlight(true);
 			player.setFlySpeed((float) 0.05);
@@ -44,9 +45,12 @@ public class MobiEventHandler implements Listener {
 	}
 
 	public void playerMorphed(Player player) {
-		Object morphObject = getMorphObject(player);
-		((Morph) morphObject).setPlayerHealth(player);
+		Morph morphObject = getMorphObject(player);
+		morphObject.setPlayerHealth(player);
 		checkAllowFlight(player);
+		if (morphObject instanceof Morphable) {
+			((Morphable) morphObject).onMorph(player);
+		}
 	}
 	
 	@EventHandler
@@ -62,7 +66,7 @@ public class MobiEventHandler implements Listener {
 	public void onEntityAttack(EntityDamageByEntityEvent event) {
 		if (event.getDamager() instanceof Player) {
 			Player player = (Player) event.getDamager();
-			Object morphObject = getMorphObject(player);
+			Morph morphObject = getMorphObject(player);
 			if (morphObject instanceof Attackable) {
 				((Attackable) morphObject).attack(event);
 			}
@@ -72,7 +76,7 @@ public class MobiEventHandler implements Listener {
 	public void onEntityDamage(EntityDamageEvent event) {
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
-			Object morphObject = getMorphObject(player);
+			Morph morphObject = getMorphObject(player);
 			if (morphObject instanceof Damageable) {
 				((Damageable) morphObject).damaged(event);
 			}
@@ -84,7 +88,7 @@ public class MobiEventHandler implements Listener {
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
 			if (mobiData.players.get(player.getUniqueId()).equals("skeleton")) {
-				Object morphObject = getMorphObject(player);
+				Morph morphObject = getMorphObject(player);
 				((Skeleton) morphObject).shoot(event);
 			}
 		}
@@ -93,7 +97,7 @@ public class MobiEventHandler implements Listener {
 	public void onPlayerItemDamage(PlayerItemDamageEvent event) {
 		Player player = event.getPlayer();
 		if (mobiData.players.get(player.getUniqueId()).equals("skeleton")) {
-			Object morphObject = getMorphObject(player);
+			Morph morphObject = getMorphObject(player);
 			((Skeleton) morphObject).itemUsed(event);
 		}
 
@@ -101,7 +105,7 @@ public class MobiEventHandler implements Listener {
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
 			Player player = event.getPlayer();
-			Object morphObject = getMorphObject(player);
+			Morph morphObject = getMorphObject(player);
 			if (morphObject instanceof Interactable) {
 				((Interactable) morphObject).interact(event);
 			}
