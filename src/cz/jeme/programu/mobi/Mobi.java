@@ -46,6 +46,7 @@ public class Mobi extends JavaPlugin {
 		MORPHS.put("skeleton", null);
 		MORPHS.put("ghast", null);
 		MORPHS.put("bat", null);
+		MORPHS.put("slime", null);
 	}
 
 	@Override
