@@ -24,7 +24,7 @@ public class EffectManager extends BukkitRunnable {
 			String morphName = mobiData.players.get(player.getUniqueId());
 			Object morph = Mobi.MORPHS.get(morphName);
 			if (morph instanceof Effectable) {
-				PotionEffect[] effects = ((Effectable) morph).getEffects();
+				PotionEffect[] effects = ((Effectable) morph).getEffects(player);
 				for (PotionEffect effect : effects) {
 					player.addPotionEffect(effect);
 				}
@@ -36,7 +36,7 @@ public class EffectManager extends BukkitRunnable {
 		String morphName = mobiData.players.get(player.getUniqueId());
 		Object morph = Mobi.MORPHS.get(morphName);
 		if (morph instanceof Effectable) {
-			PotionEffect[] effects = ((Effectable) morph).getEffects();
+			PotionEffect[] effects = ((Effectable) morph).getEffects(player);
 			for (PotionEffect effect : effects) {
 				PotionEffectType type = effect.getType();
 				player.removePotionEffect(type);
