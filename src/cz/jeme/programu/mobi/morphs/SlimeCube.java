@@ -5,17 +5,23 @@ import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
+import cz.jeme.programu.mobi.interfaces.Attackable;
 import cz.jeme.programu.mobi.interfaces.Damageable;
 import cz.jeme.programu.mobi.interfaces.Morphable;
 import net.md_5.bungee.api.ChatColor;
 
-public abstract class SlimeCube extends Morph implements Damageable, Morphable {
+public abstract class SlimeCube extends Morph implements Damageable, Morphable, Attackable {
 
+	private int big = Integer.MIN_VALUE;
+	private int medium = Integer.MIN_VALUE;
+	private int small = Integer.MIN_VALUE;
+	
 	public SlimeCube() {
 	}
 
@@ -70,5 +76,40 @@ public abstract class SlimeCube extends Morph implements Damageable, Morphable {
 	public void onMorph(Player player) {
 		getMobiData().setMorphData(player, "life", "2");
 	}
-
+	
+	@Override
+	public void attack(EntityDamageByEntityEvent event) {
+		assert big != Integer.MIN_VALUE : "Big value was not initialized!";
+		assert medium != Integer.MIN_VALUE : "Medium value was not initialized!";
+		assert small != Integer.MIN_VALUE : "Small value was not initialized!";
+		
+		Player player = (Player) event.getDamager();
+		if (player.getInventory().getItemInMainHand().getType() != Material.AIR) {
+			return;
+		}
+		int damage = switch (Integer.parseInt(getMobiData().getMorphData(player, "life"))) {
+		case 2: {
+			yield big;
+		}
+		case 1: {
+			yield medium;
+		}
+		case 0: {
+			yield small;
+		}
+		default:
+			throw new IllegalArgumentException("Unexpected value!");
+		};
+		if (damage == 0) {
+			event.setCancelled(true);
+		} else {
+			event.setDamage(damage);
+		}
+	}
+	
+	protected void setDamages(int big, int medium, int small) {
+		this.big = big;
+		this.medium = medium;
+		this.small = small;
+	}
 }
