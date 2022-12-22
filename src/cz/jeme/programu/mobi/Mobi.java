@@ -1,7 +1,9 @@
 package cz.jeme.programu.mobi;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -47,6 +49,7 @@ public class Mobi extends JavaPlugin {
 		MORPHS.put("ghast", null);
 		MORPHS.put("bat", null);
 		MORPHS.put("slime", null);
+		MORPHS.put("magma_cube", null);
 	}
 
 	@Override
@@ -159,11 +162,13 @@ public class Mobi extends JavaPlugin {
 	private Morph reflection(String morphName)
 			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
 			NoSuchMethodException, SecurityException, ClassNotFoundException {
-		String className = morphName.substring(0, 1).toUpperCase() + morphName.substring(1);
+		List<String> nameSepa = Arrays.asList(morphName.split("_"));
+		String className = "";
+		for (String item : nameSepa) {
+			className = className + item.substring(0, 1).toUpperCase() + item.substring(1);
+		}
 		Class<?> morphClass = Class.forName(this.getClass().getPackageName() + ".morphs." + className);
 		Object morphObject = morphClass.getDeclaredConstructor().newInstance();
-//			Method method = morphClass.getMethod("attack", EntityDamageByEntityEvent.class);
-//			method.invoke(morphObject, event);
 		Morph morph = (Morph) morphObject;
 		morph.setMobiData(mobiData);
 		return morph;
