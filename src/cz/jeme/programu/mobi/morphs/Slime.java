@@ -12,7 +12,7 @@ public class Slime extends SlimeCube implements Effectable {
 		setMaxHealth(16);
 	}
 
-//	@Override
+	@Override
 	public PotionEffect[] getEffects(Player player) {
 		int life = Integer.parseInt(getMobiData().getMorphData(player, "life"));
 		

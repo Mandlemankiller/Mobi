@@ -11,10 +11,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
 import cz.jeme.programu.mobi.interfaces.Damageable;
-import cz.jeme.programu.mobi.schedulers.EffectManager;
+import cz.jeme.programu.mobi.interfaces.Morphable;
 import net.md_5.bungee.api.ChatColor;
 
-public abstract class SlimeCube extends Morph implements Damageable {
+public abstract class SlimeCube extends Morph implements Damageable, Morphable {
 
 	public SlimeCube() {
 	}
@@ -43,7 +43,7 @@ public abstract class SlimeCube extends Morph implements Damageable {
 
 		if (player.getHealth() + player.getAbsorptionAmount() - event.getDamage() < 1) {
 			String mobiData = getMobiData().getMorphData(player, "life");
-			int life = (mobiData == null) ? 2 : Integer.parseInt(mobiData);
+			int life = Integer.parseInt(mobiData);
 
 			if (life == 2) {
 				getMobiData().setMorphData(player, "life", "1");
@@ -64,6 +64,11 @@ public abstract class SlimeCube extends Morph implements Damageable {
 			player.sendTitle(ChatColor.RED + "❤", String.valueOf(life) + " remaining!", 10, 20, 10);
 			cooldownManager.setTimeStamp(player.getUniqueId(), Material.SLIME_BALL); // Slime ball used just for reference here, it has no effect on the item itself
 		}
+	}
+	
+	@Override
+	public void onMorph(Player player) {
+		getMobiData().setMorphData(player, "life", "2");
 	}
 
 }
