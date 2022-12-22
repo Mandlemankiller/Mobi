@@ -21,6 +21,8 @@ public class MobiData {
 	// Yaml configuration variables
 	private static final String DATA_FILE_NAME = "data.yml";
 	private static final String DATA_SECTION_NAME = "Data";
+	private static final String MORPH_KEY_NAME = "morph";
+	private static final String MORPH_DATA_SECTION_NAME = "morph_data";
 
 	public File dataFile = null;
 	public FileConfiguration dataFileYaml = null;
@@ -84,13 +86,13 @@ public class MobiData {
 		morphs.get(value).add(player.getUniqueId());
 		
 		String uuid = player.getUniqueId().toString();
-		dataFileYamlSection.set(uuid + "." + "morph", value);
+		dataFileYamlSection.set(uuid + "." + MORPH_KEY_NAME, value);
 		saveDataFile();
 	}
 
 	private void loadPlayers() {
 		for (String key : dataFileYamlSection.getKeys(false)) {
-			String value = dataFileYamlSection.getConfigurationSection(key).getString("morph");
+			String value = dataFileYamlSection.getConfigurationSection(key).getString(MORPH_KEY_NAME);
 			players.put(UUID.fromString(key), value);
 			if (!morphs.containsKey(key)) {
 				morphs.put(value, new HashSet<UUID>());
@@ -106,20 +108,20 @@ public class MobiData {
 	public void setMorphData(Player player, String key, String value) {
 		UUID uuid = player.getUniqueId();
 		String morph = players.get(uuid);
-		dataFileYamlSection.set(uuid.toString() + "." + morph + "." + key, value);
+		dataFileYamlSection.set(uuid.toString() + "." + MORPH_DATA_SECTION_NAME + "." + morph + "." + key, value);
 		saveDataFile();
 	}
 
 	public String getMorphData(Player player, String key) {
 		UUID uuid = player.getUniqueId();
 		String morph = players.get(uuid);
-		return dataFileYamlSection.getString(uuid.toString() + "." + morph + "." + key);
+		return dataFileYamlSection.getString(uuid.toString() + "." + MORPH_DATA_SECTION_NAME + "." + morph + "." + key);
 	}
 	
 	public void deleteMorphData(Player player) {
 		UUID uuid = player.getUniqueId();
 		String morph = players.get(uuid);
-		dataFileYamlSection.set(uuid + "." + morph, null);
+		dataFileYamlSection.set(uuid.toString() + "." + MORPH_DATA_SECTION_NAME + "." + morph, null);
 		saveDataFile();
 	}
 }
