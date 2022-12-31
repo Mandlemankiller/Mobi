@@ -6,6 +6,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/spigot-api-1.19.2-R0.1-SNAPSHOT-shaded.jar" sourcepath="lib/bukkit"/>
+	<classpathentry kind="lib" path="lib/spigot-1.19.2-R0.1-SNAPSHOT-remapped-mojang.jar" sourcepath="lib/spigot-server"/>
+	<classpathentry kind="lib" path="lib/spigot-api-1.19.2-R0.1-SNAPSHOT-shaded.jar" sourcepath="lib/spigot-api"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
