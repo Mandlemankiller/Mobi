@@ -6,23 +6,24 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import cz.jeme.programu.mobi.MobiData;
 import cz.jeme.programu.mobi.Mobi;
+import cz.jeme.programu.mobi.MobiData;
 import cz.jeme.programu.mobi.interfaces.Effectable;
+import cz.jeme.programu.mobi.morphs.Morph;
 
 public class EffectManager extends BukkitRunnable {
 	
 	private MobiData mobiData;
 	
-	public EffectManager(MobiData config) {
-		this.mobiData = config;
+	public EffectManager(MobiData mobiData) {
+		this.mobiData = mobiData;
 	}
 	
 	@Override
 	public void run() {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			String morphName = mobiData.players.get(player.getUniqueId());
-			Object morph = Mobi.MORPHS.get(morphName);
+			Morph morph = Mobi.MORPHS.get(morphName);
 			if (morph instanceof Effectable) {
 				PotionEffect[] effects = ((Effectable) morph).getEffects(player);
 				for (PotionEffect effect : effects) {
@@ -34,7 +35,7 @@ public class EffectManager extends BukkitRunnable {
 	
 	public void clearPreviousEffects(Player player) {
 		String morphName = mobiData.players.get(player.getUniqueId());
-		Object morph = Mobi.MORPHS.get(morphName);
+		Morph morph = Mobi.MORPHS.get(morphName);
 		if (morph instanceof Effectable) {
 			PotionEffect[] effects = ((Effectable) morph).getEffects(player);
 			for (PotionEffect effect : effects) {
