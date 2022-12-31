@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import cz.jeme.programu.mobi.morphs.Morph;
 import cz.jeme.programu.mobi.schedulers.BurnManager;
 import cz.jeme.programu.mobi.schedulers.EffectManager;
+import cz.jeme.programu.mobi.schedulers.WaterDamageManager;
 import net.md_5.bungee.api.ChatColor;
 
 public class Mobi extends JavaPlugin {
@@ -50,6 +51,7 @@ public class Mobi extends JavaPlugin {
 		MORPHS.put("bat", null);
 		MORPHS.put("slime", null);
 		MORPHS.put("magma_cube", null);
+		MORPHS.put("bee", null);
 	}
 
 	@Override
@@ -64,7 +66,7 @@ public class Mobi extends JavaPlugin {
 
 		new BurnManager(mobiData).runTaskTimer(this, 0L, 20L);
 		new EffectManager(mobiData).runTaskTimer(this, 0L, 20L);
-		
+		new WaterDamageManager(mobiData).runTaskTimer(this, 0L, 10L);
 		
 		serverLog(Level.INFO, "Started morphs reflection");
 		for (String morph : MORPHS.keySet()) {
